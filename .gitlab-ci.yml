@@ -47,3 +47,5 @@ set-jwt-token:
 
 # TODO: (config.json): compose the redirect URL in Rust from the route + web_root
 # TODO2: flakehub-push talking to GH, can defer for spike probably
+
+# TODO (config.json/minio): sigh, the way we compose endpoint url, no bueno
