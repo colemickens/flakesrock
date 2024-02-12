@@ -1,11 +1,19 @@
+# TODO(colemickens) open questions:
+# - best way for gitlab ext re-use
+# - pipeline stages vs 'needs' (consider how they appear in UI)
+# -
+
+variables:
+- TMPDIR: /home/gitlab-runner/cache
+- NIX_INSTALLER_EXTRA_CONF: /home/gitlab-runner/cache/flakehub-extra-conf"
+
 set-jwt-token:
   id_tokens:
       GITLAB_JWT_ID_TOKEN:
         aud: "api.flakehub.com" # TODO(colemickens): proto/url or? we don't in config.json
   script:
-  - export TMPDIR="/home/gitlab-runner/cache"
-  - export NIX_INSTALLER_NETRC="/home/gitlab-runner/cache/flakehub-netrc"
-  - export NIX_INSTALLER_EXTRA_CONF="/home/gitlab-runner/cache/flakehub-extra-conf"
+  - mkdir -p "${TMPDIR}"
+  - export NIX_INSTALLER_NETRC="${TMPDIR}/flakehub-netrc"
   - echo "machine api.flakehub.com login flakehub password ${GITHUB_JWT_ID_TOKEN}" > "${NIX_INSTALLER_EXTRA_CONF}"
   - echo "machine flakehub.com login flakehub password ${GITHUB_JWT_ID_TOKEN}" > "${NIX_INSTALLER_EXTRA_CONF}"
   - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
@@ -14,14 +22,9 @@ install-nix:
   needs:
   - set-jwt-token
   script:
-  - export TMPDIR="/home/gitlab-runner/cache"
-  - export NIX_INSTALLER_EXTRA_CONF="/home/gitlab-runner/cache/flakehub-extra-conf"
+  - export 
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  # TODO: replace this with some private flake that only I have access to
-  - nix run nixpkgs#hello
-  - nix profile install nixpkgs#hello
-  - hello
   - nix flake show "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz"
   - nix build -j0 "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#hello"
 
