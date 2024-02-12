@@ -33,26 +33,17 @@ set-jwt-token:
 #   - export 
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  - nix flake show "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz"
+  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
-# WIP SCRATCH:
-# https://fh.mickens.us/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz
-
-# TODO:
+# TODO(phase 2)
   # - script to push something into cache
   #   - run seed-data, grab out the uuidv7, call `attic create`
   #   - (handwave)
   #   - run `attic push`
 
-# TODO(flakehub):
-# - create JWT handler
-# - fetch expressions with JWT
-# - pull from cache with JWT
-
-
-
 
 # TODO: (config.json): compose the redirect URL in Rust from the route + web_root
-
-# UGH SERIOUSLY flakehub-push come on, you do NOT need to talk to github
+# TODO2: flakehub-push talking to GH, can defer for spike probably
