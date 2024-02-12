@@ -1,3 +1,7 @@
+stages:
+- set-jwt-token
+- install-nix
+
 set-jwt-token:
   id_tokens:
       GITLAB_JWT_ID_TOKEN:
