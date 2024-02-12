@@ -11,6 +11,7 @@
 variables:
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: /home/gitlab-runner/cache/flakehub-extra-conf"
+  FLAKEHUB_ENDPOINT: "https://fh-api.mickens.us"
 
 set-jwt-token:
   id_tokens:
@@ -30,8 +31,11 @@ set-jwt-token:
 #   - export 
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-  - nix flake show "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz"
-  - nix build -j0 "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#hello"
+  - nix flake show "http://${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz"
+  - nix build -j0 "http://${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+
+# WIP SCRATCH:
+# https://fh.mickens.us/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz
 
 # TODO:
   # - script to push something into cache
@@ -44,3 +48,9 @@ set-jwt-token:
 # - fetch expressions with JWT
 # - pull from cache with JWT
 
+
+
+
+# TODO: (config.json): compose the redirect URL in Rust from the route + web_root
+
+# UGH SERIOUSLY flakehub-push come on, you do NOT need to talk to github
