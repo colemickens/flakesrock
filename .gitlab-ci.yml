@@ -1,6 +1,7 @@
 set-jwt-token:
-  id_token:
-      GITLAB_JWT_ID_TOKEN
+  id_tokens:
+      GITLAB_JWT_ID_TOKEN:
+        aud: "api.flakehub.com" # TODO(colemickens): proto/url or? we don't in config.json
   script:
   - export TMPDIR="/home/gitlab-runner/cache"
   - export NIX_INSTALLER_NETRC="/home/gitlab-runner/cache/flakehub-netrc"
