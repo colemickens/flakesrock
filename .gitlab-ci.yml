@@ -1,7 +1,32 @@
-test:
+set-jwt-token:
+  id_token:
+      GITLAB_JWT_ID_TOKEN
   script:
+  - export TMPDIR="/home/gitlab-runner/cache"
+  - export NIX_INSTALLER_NETRC="/home/gitlab-runner/cache/flakehub-netrc"
+  - export NIX_INSTALLER_EXTRA_CONF="/home/gitlab-runner/cache/flakehub-extra-conf"
+  - echo "machine api.flakehub.com login flakehub password ${GITHUB_JWT_ID_TOKEN}" > "${NIX_INSTALLER_EXTRA_CONF}"
+  - echo "machine flakehub.com login flakehub password ${GITHUB_JWT_ID_TOKEN}" > "${NIX_INSTALLER_EXTRA_CONF}"
+  - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
+
+install-nix:
+  script:
+  - export TMPDIR="/home/gitlab-runner/cache"
+  - export NIX_INSTALLER_EXTRA_CONF="/home/gitlab-runner/cache/flakehub-extra-conf"
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  # TODO: replace this with some private flake that only I have access to
   - nix run nixpkgs#hello
   - nix profile install nixpkgs#hello
   - hello
+  - nix flake show "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz"
+  - nix build -j0 "http://localhost:8080/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#hello"
+
+# TODO:
+  # - script to push something into cache
+
+# TODO(flakehub):
+# - create JWT handler
+# - fetch expressions with JWT
+# - pull from cache with JWT
+
