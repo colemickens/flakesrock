@@ -1,7 +1,3 @@
-stages:
-- set-jwt-token
-- install-nix
-
 set-jwt-token:
   id_tokens:
       GITLAB_JWT_ID_TOKEN:
@@ -15,6 +11,8 @@ set-jwt-token:
   - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
 
 install-nix:
+  needs:
+  - set-jwt-token
   script:
   - export TMPDIR="/home/gitlab-runner/cache"
   - export NIX_INSTALLER_EXTRA_CONF="/home/gitlab-runner/cache/flakehub-extra-conf"
