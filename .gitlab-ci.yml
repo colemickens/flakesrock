@@ -11,7 +11,7 @@
 variables:
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: /home/gitlab-runner/cache/flakehub-extra-conf"
-  FLAKEHUB_ENDPOINT: "https://fh-api.mickens.us"
+  FLAKEHUB_ENDPOINT: "https://fh.mickens.us"
 
 set-jwt-token:
   id_tokens:
