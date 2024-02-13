@@ -46,10 +46,10 @@ set-jwt-token:
   - curl -o "${TMPDIR}/flakehub-push"
     'https://pipelinesghubeus14.actions.githubusercontent.com/hZm9lDhkPg941KL476maXdYGYMWqYnstWp9ikPDAXp7TvxIl9p/_apis/pipelines/1/runs/1/signedartifactscontent?artifactName=flakehub-push-X64-Linux&urlExpires=2024-02-13T21%3A41%3A51.3186785Z&urlSigningMethod=HMACV2&urlSignature=wVKMSj1dbZakk4h4tY8wUHwYSJWU4u%2BPR%2FST4ROBeeg%3D'
   - chmod +x "${TMPDIR}/flakehub-push"
-  - "${TMPDIR}/flakehub-push"
   - file "${TMPDIR}/flakehub-push"
   - cat "${TMPDIR}/flakehub-push" | head
   - cat "${TMPDIR}/flakehub-push"
+  - "${TMPDIR}/flakehub-push"
 
 
 # curl | bash for more stuff, ew, but gitlab no-actions is worse?
