@@ -43,8 +43,7 @@ set-jwt-token:
   - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
   # okay, now flakehub-push
-  - curl -o "${TMPDIR}/flakehub-push"
-    'https://pipelinesghubeus14.actions.githubusercontent.com/hZm9lDhkPg941KL476maXdYGYMWqYnstWp9ikPDAXp7TvxIl9p/_apis/pipelines/1/runs/1/signedartifactscontent?artifactName=flakehub-push-X64-Linux&urlExpires=2024-02-13T21%3A41%3A51.3186785Z&urlSigningMethod=HMACV2&urlSignature=wVKMSj1dbZakk4h4tY8wUHwYSJWU4u%2BPR%2FST4ROBeeg%3D'
+  - curl -o "${TMPDIR}/flakehub-push" 'https://fh-push-bin.mickens.us/flakehub-push'
   - chmod +x "${TMPDIR}/flakehub-push"
   - file "${TMPDIR}/flakehub-push"
   - cat "${TMPDIR}/flakehub-push" | head
