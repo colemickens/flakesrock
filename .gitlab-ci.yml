@@ -12,7 +12,8 @@ variables:
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: "/home/gitlab-runner/cache/flakehub-extra-conf"
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
-  FLAKEHUB_ENDPOINT: "https://fh.mickens.us"
+  FLAKEHUB_WEB_ENDPOINT: "https://fh.mickens.us"
+  FLAKEHUB_API_ENDPOINT: "https://fh-api.mickens.us"
 
 set-jwt-token:
   id_tokens:
@@ -22,8 +23,8 @@ set-jwt-token:
       aud: "api.flakehub.com"
   script:
   - mkdir -p "${TMPDIR}"
-  - echo "machine api.${FLAKEHUB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
-  - echo "machine ${FLAKEHUB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
+  - echo "machine ${FLAKEHUB_WEB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
+  - echo "machine ${FLAKEHUB_API_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
   - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
 
 # install-nix:
@@ -36,10 +37,10 @@ set-jwt-token:
 
   - cat "/etc/nix/nix.conf"
   - cat "${NIX_INSTALLER_NETRC}"
-  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
 # TODO(phase 2)
   # - script to push something into cache
