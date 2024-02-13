@@ -34,7 +34,8 @@ set-jwt-token:
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
-  - cat "${HOME}/.config/nix.conf"
+  - cat "${HOME}/.config/nix.conf" || true
+  - cat "/etc/nix/nix.conf"
   - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
