@@ -46,7 +46,7 @@ set-jwt-token:
   - curl -o "${TMPDIR}/flakehub-push" 'https://fh-push-bin.mickens.us/flakehub-push'
   - chmod +x "${TMPDIR}/flakehub-push"
   - file "${TMPDIR}/flakehub-push"
-  - "${TMPDIR}/flakehub-push"
+  - "${TMPDIR}/flakehub-push" --visibility public
 
 
 # curl | bash for more stuff, ew, but gitlab no-actions is worse?
