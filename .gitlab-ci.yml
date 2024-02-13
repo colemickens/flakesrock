@@ -46,8 +46,6 @@ set-jwt-token:
   - curl -o "${TMPDIR}/flakehub-push" 'https://fh-push-bin.mickens.us/flakehub-push'
   - chmod +x "${TMPDIR}/flakehub-push"
   - file "${TMPDIR}/flakehub-push"
-  - cat "${TMPDIR}/flakehub-push" | head
-  - cat "${TMPDIR}/flakehub-push"
   - "${TMPDIR}/flakehub-push"
 
 
