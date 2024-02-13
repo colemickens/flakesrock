@@ -16,10 +16,10 @@ variables:
 
 set-jwt-token:
   id_tokens:
-      GITLAB_JWT_ID_TOKEN:
-        # TODO(colemickens): proto/url or? we don't in config.json
-        # TODO(colemickens): maybe /dont/ specialize this for self-host
-        aud: "api.flakehub.com"
+    GITLAB_JWT_ID_TOKEN:
+      # TODO(colemickens): proto/url or? we don't in config.json
+      # TODO(colemickens): maybe /dont/ specialize this for self-host
+      aud: "api.flakehub.com"
   script:
   - mkdir -p "${TMPDIR}"
   - echo "machine api.${FLAKEHUB_ENDPOINT} login flakehub password ${GITHUB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
