@@ -14,7 +14,7 @@ variables:
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
   FLAKEHUB_WEB_ENDPOINT: "https://fh.mickens.us"
   FLAKEHUB_API_ENDPOINT: "https://fh-api.mickens.us"
-  FLAKEHUB_PUSH_HOST: "https://fh.mickens.us"
+  FLAKEHUB_PUSH_HOST: "https://fh-api.mickens.us"
 
 set-jwt-token:
   id_tokens:
