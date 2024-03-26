@@ -37,15 +37,19 @@ set-jwt-token:
 
   - cat "/etc/nix/nix.conf"
   - cat "${NIX_INSTALLER_NETRC}"
+
+  # okay, now flakehub-push
+  - curl -o "${TMPDIR}/flakehub-push" 'https://install.determinate.systems/flakehub-push/branch/main/x86_64-linux?ci=gitlab'
+  - chmod +x "${TMPDIR}/flakehub-push"
+  - file "${TMPDIR}/flakehub-push"
+
+  # hard to test right now since local flakehub-push is kinda busted
   - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
   - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
-  # okay, now flakehub-push
-  - curl -o "${TMPDIR}/flakehub-push" 'https://fh-push-bin.mickens.us/flakehub-push'
-  - chmod +x "${TMPDIR}/flakehub-push"
-  - file "${TMPDIR}/flakehub-push"
+
   # wtf gitlab? vv
   - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'ghuser/flakesrock-private' --rolling --rolling-minor 99"
 
