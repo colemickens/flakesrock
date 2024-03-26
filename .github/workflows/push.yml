@@ -1,0 +1,19 @@
+name: Release
+
+on:
+  push:
+
+jobs:
+  flakehub:
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write # Necessary for authenticating against FlakeHub
+      contents: read
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v4
+      - uses: actions/checkout@v3
+      - name: Push to flakehub
+        uses: determinatesystems/flakehub-push@main
+        with:
+          visibility: "public"
+          rolling: true
