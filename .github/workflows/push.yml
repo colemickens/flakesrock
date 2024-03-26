@@ -3,9 +3,11 @@ name: Release
 on:
   push:
 
+  
 jobs:
   flakehub:
     runs-on: ubuntu-22.04
+
     permissions:
       id-token: write # Necessary for authenticating against FlakeHub
       contents: read
@@ -17,3 +19,4 @@ jobs:
         with:
           visibility: "public"
           rolling: true
+          host: "https://api.colemick.dev.f.second.systems" # composite action, overrides env vars, ew ugh wtf

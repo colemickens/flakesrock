@@ -12,9 +12,8 @@ variables:
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: "/home/gitlab-runner/cache/flakehub-extra-conf"
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
-  FLAKEHUB_WEB_ENDPOINT: "https://fh.mickens.us"
-  FLAKEHUB_API_ENDPOINT: "https://fh-api.mickens.us"
-  FLAKEHUB_PUSH_HOST: "https://fh-api.mickens.us"
+  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems"
+  FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # my own var, for pull/testing
 
 set-jwt-token:
   id_tokens:
