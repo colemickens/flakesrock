@@ -1,95 +1,61 @@
-# TODO(colemickens) open questions:
-# - best way for gitlab ext re-use
-# - pipeline stages vs 'needs' (consider how they appear in UI)
-
-# TODO(colemickens) ideas:
-# - use a custom image for gitlab with the installer pre-baked?? but people probably already have their own?? how do we test with those, etc?
-
-# TODO(colemickens) headaches:
-# - gitlab doesn't share the state between jobs ???? (even within pipeline TODO: investigate)
-
 variables:
+  # gitlab ci debug
+  CI_DEBUG_TRACE: "true"
+  # gitlab ci environment weirdness (HOME isn't set or something)s
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: "/home/gitlab-runner/cache/flakehub-extra-conf"
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
-  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems" # tube
-  FLAKEHUB_PUSH_HOST: "https://api.flakehub.com" 
+
+  ## FLAKEHUB_PUSH_HOST is the api endpoint flakehub-push will push to
+  # prod:
+  # # FLAKEHUB_PUSH_HOST: "https://api.flakehub.com"
+  # dev: colemickens's tube instance
+  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems"
+
+  ## FLAKEHUB_WEB_ENDPOINT is the endpoint clients will use to fetch flakehub-hosted flake closures 
+  # prod:
+  # # FLAKEHUB_WEB_ENDPOINT: "https://flakehub.com"
+  # dev: colemickens's tube instance:
   FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # my own var, for pull/testing
-  # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
-  FLAKEHUB_PUSH_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
-  CI_DEBUG_TRACE: "true"
 
-# retrigger x1111
+  # FLAKEHUB_PUSH_BINARY_URL is where we acquire the `flakehub-push` binary
+  # prod:
+  # # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
+  # wip/dev:
+  # # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
+  # test from colemickens's machine
+  FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
 
-# note my specific testing might get weird after split org/users?
-
-set-jwt-token:
+super-cool-nix-job:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
-      # TODO(colemickens): proto/url or? we don't in config.json
-      # TODO(colemickens): maybe /dont/ specialize this for self-host
       aud: "https://api.colemick.dev.f.second.systems"
   script:
   - mkdir -p "${TMPDIR}"
+
+  # pre-login with netrc
   - echo "machine ${FLAKEHUB_WEB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
   - echo "machine ${FLAKEHUB_API_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
   - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
 
-# install-nix:
-#   needs:
-#   - set-jwt-token
-#   script:
-#   - export 
+  # install-nix:
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
+  # sanity check
   - cat "/etc/nix/nix.conf"
   - cat "${NIX_INSTALLER_NETRC}"
 
-  # okay, now flakehub-push
-  # curl --output flakehub-push --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/flakehub-push/pr/121/X64-Linux
-  - curl -L -o "${TMPDIR}/flakehub-push" "${FLAKEHUB_PUSH_URL}"
+  # acquire flakehub-push
+  - curl --output "${TMPDIR}/flakehub-push" --proto '=https' --tlsv1.2 -sSf -L "${FLAKEHUB_PUSH_BINARY_URL}"
   - chmod +x "${TMPDIR}/flakehub-push"
 
-  # no file on gitgud
-  # - file "${TMPDIR}/flakehub-push"
+  # test pulling public+private flakes
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
-  # COME BACK TO THIS
-  # hard to test right now since local flakehub-push is kinda busted
-  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
-  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
-  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
-  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
-
-
-  # wtf gitlab? vv
+  # run flakehub-push
+  # - NOTE(colemickens): not sure why this got re-wrapped in bash -c ...
   - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'colemickens/flakesrock' --rolling --rolling-minor 101"
-
-
-# curl | bash for more stuff, ew, but gitlab no-actions is worse?
-
-# TODO(phase 2)
-  # - script to push something into cache
-  #   - run seed-data, grab out the uuidv7, call `attic create`
-  #   - (handwave)
-  #   - run `attic push`
-
-
-# TODO: (config.json): compose the redirect URL in Rust from the route + web_root
-# TODO2: flakehub-push talking to GH, can defer for spike probably
-
-# TODO (config.json/minio): sigh, the way we compose endpoint url, no bueno
-
-
-# TODO (config.json): commiting terrible sins to make minion+cftunnel work
-
-# write some thoughts about how we're still doing this implicit runner identity thing
-# the runner should be its own identity imo, instead of impersonating an "actor"/owner
-# TODO(colemickens) ^ this probably requires thought vis-a-vis User/UserOrg/Org split
-
-# seriously, we have to do something about auto-register and think through this and just do ti
-# I do NOT want to copy/paste more of this tech debt upsert code.
-
-# ... why is flakehub netrc part of the _nix installer_ anyway?????????
-# we should have a fh-login action or something,
-# - this would contain the script that can be uesd in GL potentially
