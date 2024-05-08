@@ -12,7 +12,8 @@ variables:
   TMPDIR: /home/gitlab-runner/cache
   NIX_INSTALLER_EXTRA_CONF: "/home/gitlab-runner/cache/flakehub-extra-conf"
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
-  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems"
+  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems" # tube
+  FLAKEHUB_PUSH_HOST: "https://api.flakehub.com" 
   FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # my own var, for pull/testing
   # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
   FLAKEHUB_PUSH_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
