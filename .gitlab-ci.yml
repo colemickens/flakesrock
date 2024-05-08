@@ -16,9 +16,9 @@ variables:
 
   # FLAKEHUB_PUSH_BINARY_URL is where we acquire the `flakehub-push` binary
   # prod:
-  # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
+  # FLAKEHUB_PUSH_BINARY_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
   # wip/dev:
-  FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
+  FLAKEHUB_PUSH_BINARY_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
   # test from colemickens's machine
   # FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
 
