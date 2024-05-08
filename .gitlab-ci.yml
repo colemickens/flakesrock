@@ -29,7 +29,7 @@ variables:
 super-cool-nix-job:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
-      aud: "https://api.colemick.dev.f.second.systems"
+      aud: "api.flakehub.com"
   script:
   - mkdir -p "${TMPDIR}"
 
