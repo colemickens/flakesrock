@@ -7,26 +7,23 @@ variables:
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
 
   ## FLAKEHUB_PUSH_HOST is the api endpoint flakehub-push will push to
-  # FLAKEHUB_PUSH_HOST: "https://api.flakehub.com" # prod
-  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems" # tube
+  FLAKEHUB_PUSH_HOST: "https://api.flakehub.com" # prod
+  # FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems" # tube
 
   ## FLAKEHUB_WEB_ENDPOINT is the endpoint clients will use to fetch flakehub-hosted flake closures 
-  # FLAKEHUB_WEB_ENDPOINT: "https://flakehub.com" # prod
-  FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # dev
+  FLAKEHUB_WEB_ENDPOINT: "https://flakehub.com" # prod
+  # FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # dev
 
   # FLAKEHUB_PUSH_BINARY_URL is where we acquire the `flakehub-push` binary
   # prod:
-  # FLAKEHUB_PUSH_BINARY_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
-  # wip/dev:
-  FLAKEHUB_PUSH_BINARY_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
+  FLAKEHUB_PUSH_BINARY_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
   # test from colemickens's machine
   # FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
 
 super-cool-nix-job:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
-      # aud: "api.flakehub.com"
-      aud: "flakehub-localhost"
+      aud: "api.flakehub.com"
   script:
   - mkdir -p "${TMPDIR}"
 
