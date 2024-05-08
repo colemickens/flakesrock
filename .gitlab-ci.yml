@@ -14,13 +14,19 @@ variables:
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
   FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems"
   FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # my own var, for pull/testing
+  FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
+  CI_DEBUG_TRACE: "true"
+
+# retrigger x1111
+
+# note my specific testing might get weird after split org/users?
 
 set-jwt-token:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
       # TODO(colemickens): proto/url or? we don't in config.json
       # TODO(colemickens): maybe /dont/ specialize this for self-host
-      aud: "api.flakehub.com"
+      aud: "https://api.colemick.dev.f.second.systems"
   script:
   - mkdir -p "${TMPDIR}"
   - echo "machine ${FLAKEHUB_WEB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
@@ -39,19 +45,23 @@ set-jwt-token:
   - cat "${NIX_INSTALLER_NETRC}"
 
   # okay, now flakehub-push
-  - curl -o "${TMPDIR}/flakehub-push" 'https://install.determinate.systems/flakehub-push/branch/main/x86_64-linux?ci=gitlab'
+  # curl --output flakehub-push --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/flakehub-push/pr/121/X64-Linux
+  - curl -L -o "${TMPDIR}/flakehub-push" "${FLAKEHUB_PUSH_URL}"
   - chmod +x "${TMPDIR}/flakehub-push"
-  - file "${TMPDIR}/flakehub-push"
 
+  # no file on gitgud
+  # - file "${TMPDIR}/flakehub-push"
+
+  # COME BACK TO THIS
   # hard to test right now since local flakehub-push is kinda busted
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
 
   # wtf gitlab? vv
-  - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'ghuser/flakesrock-private' --rolling --rolling-minor 99"
+  - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'colemickens/flakesrock' --rolling --rolling-minor 101"
 
 
 # curl | bash for more stuff, ew, but gitlab no-actions is worse?
