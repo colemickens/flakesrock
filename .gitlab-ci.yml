@@ -7,36 +7,28 @@ variables:
   NIX_INSTALLER_NETRC: "/home/gitlab-runner/cache/nix-netrc"
 
   ## FLAKEHUB_PUSH_HOST is the api endpoint flakehub-push will push to
-  # prod:
-  # # FLAKEHUB_PUSH_HOST: "https://api.flakehub.com"
-  # dev: colemickens's tube instance
-  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems"
+  # FLAKEHUB_PUSH_HOST: "https://api.flakehub.com" # prod
+  FLAKEHUB_PUSH_HOST: "https://api.colemick.dev.f.second.systems" # tube
 
   ## FLAKEHUB_WEB_ENDPOINT is the endpoint clients will use to fetch flakehub-hosted flake closures 
-  # prod:
-  # # FLAKEHUB_WEB_ENDPOINT: "https://flakehub.com"
-  # dev: colemickens's tube instance:
-  FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # my own var, for pull/testing
+  # FLAKEHUB_WEB_ENDPOINT: "https://flakehub.com" # prod
+  FLAKEHUB_WEB_ENDPOINT: "https://web.colemick.dev.f.second.systems" # dev
 
   # FLAKEHUB_PUSH_BINARY_URL is where we acquire the `flakehub-push` binary
   # prod:
-  # # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
+  # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/branch/main/X64-Linux?ci=gitlab"
   # wip/dev:
-  # # FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
+  FLAKEHUB_PUSH_URL: "https://install.determinate.systems/flakehub-push/pr/121/X64-Linux?ci=gitlab"
   # test from colemickens's machine
-  FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
+  # FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
 
 super-cool-nix-job:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
-      aud: "api.flakehub.com"
+      # aud: "api.flakehub.com"
+      aud: "flakehub-localhost"
   script:
   - mkdir -p "${TMPDIR}"
-
-  # pre-login with netrc
-  - echo "machine ${FLAKEHUB_WEB_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
-  - echo "machine ${FLAKEHUB_API_ENDPOINT} login flakehub password ${GITLAB_JWT_ID_TOKEN}" >> "${NIX_INSTALLER_NETRC}"
-  - echo "netrc-file = ${NIX_INSTALLER_NETRC}" > "${NIX_INSTALLER_EXTRA_CONF}"
 
   # install-nix:
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
@@ -51,10 +43,10 @@ super-cool-nix-job:
   - chmod +x "${TMPDIR}/flakehub-push"
 
   # test pulling public+private flakes
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
-  - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/0.3.1.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-public/*.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/0.3.1.tar.gz#truth"
+  # - nix build -j0 "${FLAKEHUB_WEB_ENDPOINT}/f/ghuser-cole/flakesrock-private/*.tar.gz#truth"
 
   # run flakehub-push
   # - NOTE(colemickens): not sure why this got re-wrapped in bash -c ...
