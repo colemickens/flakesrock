@@ -3,7 +3,6 @@ name: Release
 on:
   push:
 
-  
 jobs:
   flakehub:
     runs-on: ubuntu-22.04
@@ -12,11 +11,8 @@ jobs:
       id-token: write # Necessary for authenticating against FlakeHub
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v4
-      - uses: actions/checkout@v3
-      - name: Push to flakehub
-        uses: determinatesystems/flakehub-push@main
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/magic-nix-cache-action@main
         with:
-          visibility: "public"
-          rolling: true
-          host: "https://api.colemick.dev.f.second.systems" # composite action, overrides env vars, ew ugh wtf
+          use-gha-cache: false

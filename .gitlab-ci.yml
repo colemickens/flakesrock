@@ -20,6 +20,8 @@ variables:
   # test from colemickens's machine
   # FLAKEHUB_PUSH_BINARY_URL: "https://web.colemick.dev.f.second.systems/flakehub-push"
 
+  # FLAKEHUB_MNC_BINARY_URL is where we acquire the `magic-nix-cache` binary
+
 super-cool-nix-job:
   id_tokens:
     GITLAB_JWT_ID_TOKEN:
@@ -35,10 +37,6 @@ super-cool-nix-job:
   # install-nix:
   - curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --no-confirm --init none
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-  # sanity check
-  - cat "/etc/nix/nix.conf"
-  - cat "${NIX_INSTALLER_NETRC}"
 
   # acquire flakehub-push
   - curl --output "${TMPDIR}/flakehub-push" --proto '=https' --tlsv1.2 -sSf -L "${FLAKEHUB_PUSH_BINARY_URL}"
