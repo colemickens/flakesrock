@@ -55,4 +55,4 @@ super-cool-nix-job:
 
   # run flakehub-push
   # - NOTE(colemickens): not sure why this got re-wrapped in bash -c ...
-  - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'colemickens/flakesrock' --rolling --rolling-minor 101"
+  - bash -c "env RUST_LOG=debug ${TMPDIR}/flakehub-push --visibility public --github-token 'THISISNOTUSED' --repository 'colemickens/flakesrock' --rolling --rolling-minor 104"
