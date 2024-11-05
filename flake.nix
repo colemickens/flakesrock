@@ -26,7 +26,7 @@
         in {
           default = pkgs.runCommand "test-flakehub-cache-payload" {} ''
             set -x
-            dd if=/dev/random of=$out bs=1M count=512
+            dd if=/dev/random of=$out bs=1M count=1024
           '';
         };
     };
