@@ -22,7 +22,7 @@
         };
       x86_64-linux =
         let
-          pkgs = import inputs.nixpkgs { system = "aarch64-linux"; };
+          pkgs = import inputs.nixpkgs { system = "x86_64-linux"; };
         in {
           default = pkgs.runCommand "test-flakehub-cache-payload" {} ''
             set -x
