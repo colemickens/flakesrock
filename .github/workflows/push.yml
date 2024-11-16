@@ -12,11 +12,11 @@ jobs:
       id-token: write # Necessary for authenticating against FlakeHub
       contents: read
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v4
-      - uses: actions/checkout@v3
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: actions/checkout@v4
       - name: Push to flakehub
         uses: determinatesystems/flakehub-push@main
         with:
           visibility: "public"
           rolling: true
-          host: "https://api.colemick.dev.f.second.systems" # composite action, overrides env vars, ew ugh wtf
+          host: "https://api.flakehub.aws-test.f.second.systems" # composite action, overrides env vars, ew ugh wtf
